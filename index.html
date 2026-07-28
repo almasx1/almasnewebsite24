@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Almas Portfolio</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+scroll-behavior:smooth;
+}
+
+body{
+background:#0d1025;
+color:white;
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+background:
+radial-gradient(circle,#ffffff88 1px,transparent 2px);
+background-size:45px 45px;
+opacity:.15;
+animation:move 30s linear infinite;
+z-index:-1;
+}
+
+@keyframes move{
+from{transform:translateY(0);}
+to{transform:translateY(-300px);}
+}
+
+nav{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+width:90%;
+max-width:1000px;
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(15px);
+padding:15px 30px;
+border-radius:18px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:1000;
+}
+
+nav h2{
+color:#fff;
+}
+
+nav ul{
+display:flex;
+gap:25px;
+list-style:none;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+font-weight:500;
+transition:.3s;
+}
+
+nav a:hover{
+color:#7c9cff;
+}
+
+header{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:100px 20px;
+}
+
+.card{
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(20px);
+padding:40px;
+border-radius:25px;
+text-align:center;
+width:380px;
+box-shadow:0 15px 40px rgba(0,0,0,.3);
+}
+
+.card img{
+width:170px;
+height:170px;
+border-radius:50%;
+border:5px solid #6bc7ff;
+object-fit:cover;
+margin-bottom:20px;
+}
+
+.card h1{
+font-size:40px;
+}
+
+.card p{
+margin-top:10px;
+color:#cfcfcf;
+}
+
+.btns{
+margin-top:30px;
+display:flex;
+justify-content:center;
+gap:15px;
+}
+
+.btn{
+padding:12px 25px;
+border-radius:50px;
+text-decoration:none;
+color:white;
+font-weight:600;
+transition:.3s;
+}
+
+.wa{
+background:#25D366;
+}
+
+.ig{
+background:#ff4ca5;
+}
+
+.btn:hover{
+transform:translateY(-5px);
+}
+
+section{
+padding:90px 10%;
+}
+
+.title{
+font-size:35px;
+margin-bottom:30px;
+text-align:center;
+}
+
+.about{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:30px;
+}
+
+.box{
+background:rgba(255,255,255,.05);
+padding:30px;
+border-radius:20px;
+}
+
+.skills{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:20px;
+}
+
+.skill{
+background:#171b38;
+padding:20px;
+border-radius:15px;
+text-align:center;
+transition:.3s;
+}
+
+.skill:hover{
+transform:translateY(-8px);
+background:#21284f;
+}
+
+.projects{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:25px;
+}
+
+.project{
+background:#171b38;
+padding:25px;
+border-radius:18px;
+transition:.3s;
+}
+
+.project:hover{
+transform:translateY(-10px);
+}
+
+footer{
+padding:30px;
+text-align:center;
+color:#aaa;
+}
+
+@media(max-width:700px){
+
+nav{
+flex-direction:column;
+gap:10px;
+}
+
+nav ul{
+gap:15px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.card{
+width:100%;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<nav>
+
+<h2>Almas</h2>
+
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#skills">Skills</a></li>
+<li><a href="#projects">Projects</a></li>
+</ul>
+
+</nav>
+
+<header id="home">
+
+<div class="card">
+
+<img src="https://i.imgur.com/0y8Ftya.jpeg">
+
+<h1>Almas</h1>
+
+<p>📍 Lampung, Indonesia</p>
+
+<p>Front-End Developer • TKJ Student • UI Enthusiast</p>
+
+<div class="btns">
+
+<a class="btn wa" href="#">WhatsApp</a>
+
+<a class="btn ig" href="#">Instagram</a>
+
+</div>
+
+</div>
+
+</header>
+
+<section id="about">
+
+<h2 class="title">About Me</h2>
+
+<div class="about">
+
+<div class="box">
+
+<h3>Tentang Saya</h3>
+
+<br>
+
+<p>
+Halo! Saya Almas, seorang pelajar jurusan Teknik Komputer dan Jaringan (TKJ) yang memiliki minat dalam dunia web development, desain antarmuka (UI), dan teknologi jaringan. Saya senang belajar hal baru serta membuat website modern yang responsif dan menarik.
+</p>
+
+</div>
+
+<div class="box">
+
+<h3>Informasi</h3>
+
+<br>
+
+<p>Nama : Almas</p>
+
+<p>Umur : -</p>
+
+<p>Jurusan : TKJ</p>
+
+<p>Status : Student</p>
+
+<p>Hobi : Coding & Gaming</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="skills">
+
+<h2 class="title">Skills</h2>
+
+<div class="skills">
+
+<div class="skill">HTML</div>
+
+<div class="skill">CSS</div>
+
+<div class="skill">JavaScript</div>
+
+<div class="skill">Networking</div>
+
+<div class="skill">Linux</div>
+
+<div class="skill">UI Design</div>
+
+</div>
+
+</section>
+
+<section id="projects">
+
+<h2 class="title">Projects</h2>
+
+<div class="projects">
+
+<div class="project">
+<h3>Portfolio Website</h3>
+<p>Website pribadi modern dengan desain glassmorphism.</p>
+</div>
+
+<div class="project">
+<h3>TKJ Poster</h3>
+<p>Poster promosi jurusan Teknik Komputer dan Jaringan.</p>
+</div>
+
+<div class="project">
+<h3>Network Simulation</h3>
+<p>Simulasi jaringan menggunakan Cisco Packet Tracer.</p>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+© 2026 Almas Portfolio
+
+</footer>
+
+</body>
+
+<section id="gaming">
+
+<h2 class="title">🎮 My Favorite Games</h2>
+
+<div class="grid">
+
+<div class="card">
+
+<img src="https://upload.wikimedia.org/wikipedia/en/9/9e/Mobile_Legends_Bang_Bang_logo.jpg" alt="Mobile Legends">
+
+<h3>Mobile Legends</h3>
+
+<p style="margin-top:10px;">
+Saya sangat suka bermain Mobile Legends. Role favorit saya adalah Mid Lane, Jungler, dan Gold Lane.
+</p>
+
+</div>
+
+<div class="card">
+
+<img src="https://upload.wikimedia.org/wikipedia/en/0/05/Free_Fire_Logo.png" alt="Free Fire">
+
+<h3>Free Fire</h3>
+
+<p style="margin-top:10px;">
+Selain Mobile Legends, saya juga bermain Free Fire bersama teman saat waktu luang.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="skills">
+
+<h2 class="title">💻 Skills</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🌐 HTML</h3>
+<p>Mampu membuat struktur website modern.</p>
+</div>
+
+<div class="card">
+<h3>🎨 CSS</h3>
+<p>Mendesain website dengan tampilan menarik.</p>
+</div>
+
+<div class="card">
+<h3>⚡ JavaScript</h3>
+<p>Membuat website lebih interaktif.</p>
+</div>
+
+<div class="card">
+<h3>🖥 Networking</h3>
+<p>Belajar jaringan komputer di jurusan TKJ.</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="projects">
+
+<h2 class="title">📂 My Projects</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>🌐 Portfolio Website</h3>
+<p>Website portfolio pribadi dengan desain modern.</p>
+</div>
+
+<div class="card">
+<h3>🖥 TKJ Project</h3>
+<p>Simulasi jaringan menggunakan Cisco Packet Tracer.</p>
+</div>
+
+<div class="card">
+<h3>🎨 Poster Design</h3>
+<p>Membuat poster promosi jurusan TKJ.</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="contact">
+
+<h2 class="title">📞 Contact</h2>
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Hubungi Saya</h3>
+
+<br>
+
+<p>📧 Email : almas@example.com</p>
+
+<p>📱 WhatsApp : 08xxxxxxxxxx</p>
+
+<p>📷 Instagram : @almas</p>
+
+</div>
+
+<div class="card">
+
+<h3>Terima Kasih</h3>
+
+<p style="margin-top:15px;">
+Terima kasih telah mengunjungi portfolio saya. Semoga hari Anda menyenangkan!
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<style>
+
+html{
+scroll-behavior:smooth;
+}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(40px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.profile,
+.card{
+animation:fadeUp .8s ease;
+}
+
+.grid .card:hover{
+box-shadow:0 0 25px rgba(114,184,255,.35);
+}
+
+#topBtn{
+position:fixed;
+bottom:25px;
+right:25px;
+width:50px;
+height:50px;
+border:none;
+border-radius:50%;
+background:#5f8cff;
+color:white;
+font-size:20px;
+cursor:pointer;
+display:none;
+transition:.3s;
+box-shadow:0 0 15px rgba(95,140,255,.4);
+}
+
+#topBtn:hover{
+transform:scale(1.1);
+}
+
+@media(max-width:768px){
+
+nav{
+flex-direction:column;
+gap:15px;
+padding:15px;
+}
+
+nav ul{
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.profile{
+width:100%;
+padding:30px;
+}
+
+.profile h1{
+font-size:34px;
+}
+
+.title{
+font-size:28px;
+}
+
+}
+
+footer{
+margin-top:80px;
+padding:35px;
+text-align:center;
+background:rgba(255,255,255,.04);
+backdrop-filter:blur(10px);
+color:#bdbdbd;
+}
+
+footer h3{
+color:white;
+margin-bottom:10px;
+}
+
+</style>
+
+<button id="topBtn">↑</button>
+
+<footer>
+
+<h3>Almas Portfolio</h3>
+
+<p>
+Terima kasih telah mengunjungi website portfolio saya.
+</p>
+
+<p style="margin-top:10px;font-size:13px;">
+© 2026 Almas. All Rights Reserved.
+</p>
+
+</footer>
+
+<script>
+
+const btn=document.getElementById("topBtn");
+
+window.onscroll=function(){
+
+if(document.documentElement.scrollTop>300){
+
+btn.style.display="block";
+
+}else{
+
+btn.style.display="none";
+
+}
+
+}
+
+btn.onclick=function(){
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
+
+
+      >
