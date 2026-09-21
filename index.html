@@ -93,6 +93,9 @@
 </head>
 <body class="relative min-h-screen font-sans selection:bg-cyan-500 selection:text-black">
 
+    <!-- Audio Element Hidden -->
+    <audio id="realAudioPlayer" preload="auto"></audio>
+
     <!-- Ambient Lighting FX -->
     <div class="ambient-glow w-[500px] h-[500px] bg-cyan-500/10 -top-40 -left-40"></div>
     <div class="ambient-glow w-[600px] h-[600px] bg-purple-600/10 top-1/3 -right-60"></div>
@@ -123,17 +126,17 @@
         </a>
     </div>
 
-    <!-- Interactive Music Player UI Widget (UI Only / No Audio) -->
+    <!-- Interactive Music Player UI Widget with Real Sound -->
     <div id="musicModal" class="fixed bottom-24 right-6 z-50 w-80 sm:w-80 rounded-2xl glass-panel border border-purple-500/40 shadow-2xl hidden flex-col overflow-hidden transition-all duration-300">
         <!-- Player Header -->
         <div class="bg-slate-900/90 p-4 border-b border-purple-500/20 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-400 flex items-center justify-center text-purple-400">
-                    <i class="fa-solid fa-compact-disc animate-spin" style="animation-duration: 4s;"></i>
+                    <i id="discIcon" class="fa-solid fa-compact-disc"></i>
                 </div>
                 <div>
                     <h4 class="font-orbitron font-bold text-xs text-white">PLAYLIST FAVORIT</h4>
-                    <span class="text-[10px] text-purple-400 font-mono">UI Music Player</span>
+                    <span class="text-[10px] text-purple-400 font-mono">Nadhif Basalamah</span>
                 </div>
             </div>
             <button onclick="toggleMusicWidget()" class="text-gray-400 hover:text-white transition-colors">
@@ -149,18 +152,18 @@
                 </div>
                 <div class="overflow-hidden">
                     <h5 id="musicTitle" class="font-bold text-xs text-white truncate">Kota Ini Tak Sama Tanpa Mu</h5>
-                    <p id="musicArtist" class="text-[11px] text-gray-400 truncate">Almas Favorites</p>
+                    <p id="musicArtist" class="text-[11px] text-gray-400 truncate">Nadhif Basalamah</p>
                 </div>
             </div>
 
             <!-- UI Progress Bar -->
             <div class="space-y-1">
-                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                    <div id="musicProgressBar" class="bg-gradient-to-r from-purple-500 to-cyan-400 h-full w-2/5 transition-all duration-300"></div>
+                <div onclick="seekAudio(event)" class="w-full bg-slate-800 h-2 rounded-full overflow-hidden cursor-pointer relative">
+                    <div id="musicProgressBar" class="bg-gradient-to-r from-purple-500 to-cyan-400 h-full w-0 transition-all duration-100"></div>
                 </div>
                 <div class="flex justify-between text-[10px] font-mono text-gray-400">
-                    <span id="musicCurrentTime">01:25</span>
-                    <span id="musicTotalTime">03:45</span>
+                    <span id="musicCurrentTime">00:00</span>
+                    <span id="musicTotalTime">00:00</span>
                 </div>
             </div>
 
@@ -170,7 +173,7 @@
                     <i class="fa-solid fa-backward-step text-base"></i>
                 </button>
                 <button onclick="togglePlayState()" id="playPauseBtn" class="w-10 h-10 rounded-full bg-cyan-400 text-slate-950 flex items-center justify-center hover:scale-105 transition-transform font-bold">
-                    <i class="fa-solid fa-pause text-sm"></i>
+                    <i class="fa-solid fa-play text-sm ml-0.5"></i>
                 </button>
                 <button onclick="nextTrack()" class="text-gray-400 hover:text-cyan-400 transition-colors">
                     <i class="fa-solid fa-forward-step text-base"></i>
@@ -183,7 +186,6 @@
             <span class="text-[10px] font-orbitron font-semibold text-gray-400 block px-1 mb-1">DAFTAR TREK</span>
             <div onclick="selectTrack(0)" id="track-0" class="p-2 rounded-xl bg-purple-500/20 text-cyan-300 font-semibold cursor-pointer hover:bg-purple-500/30 transition-colors flex items-center justify-between">
                 <span class="truncate">1. Kota Ini Tak Sama Tanpa Mu</span>
-                <i class="fa-solid fa-volume-high text-[10px]"></i>
             </div>
             <div onclick="selectTrack(1)" id="track-1" class="p-2 rounded-xl text-gray-400 cursor-pointer hover:bg-slate-800 transition-colors flex items-center justify-between">
                 <span class="truncate">2. Bergema Selamanya</span>
@@ -574,13 +576,14 @@
         });
 
         function sendAiMessage() {
-            const query = aiInput.value.trim();
-            if (!query) return;
+            const text = aiInput.value.trim();
+            if (!text) return;
 
+            // User Message
             aiMessages.innerHTML += `
-                <div class="flex items-start gap-2 justify-end">
-                    <div class="bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 p-2.5 rounded-xl max-w-[80%] font-sans">
-                        ${escapeHtml(query)}
+                <div class="flex items-start justify-end gap-2">
+                    <div class="bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 p-2.5 rounded-xl max-w-[80%]">
+                        ${text}
                     </div>
                 </div>
             `;
@@ -588,52 +591,60 @@
             aiInput.value = "";
             aiMessages.scrollTop = aiMessages.scrollHeight;
 
+            // AI Response Logic
             setTimeout(() => {
-                const response = getAiResponse(query.toLowerCase());
+                let response = "Maaf, saya belum memahami pertanyaan tersebut. Coba tanyakan tentang jurusan TKJ, game favorit, atau kontak Almas.";
+                const q = text.toLowerCase();
+
+                if (q.includes('siapa') || q.includes('about') || q.includes('tentang')) {
+                    response = "Almas adalah seorang siswa berusia 16 tahun di SMK YPI jurusan Teknik Komputer & Jaringan (TKJ). Selain fokus di dunia networking, Almas juga aktif sebagai gamer!";
+                } else if (q.includes('game') || q.includes('main') || q.includes('ff') || q.includes('ml')) {
+                    response = "Game favorit Almas adalah Mobile Legends (Mythic Glory), Free Fire (Grandmaster), serta game nostalgia PS2 seperti Downhill, RE4, SmackDown, dan God of War!";
+                } else if (q.includes('kontak') || q.includes('wa') || q.includes('email') || q.includes('hubungi')) {
+                    response = "Kamu bisa menghubungi Almas via WhatsApp di 088276757693 atau email ke almasprivate24@gmail.com.";
+                } else if (q.includes('tkj') || q.includes('sekolah') || q.includes('skill')) {
+                    response = "Almas menguasai konfigurasi MikroTik, dasar jaringan Cisco, Linux Server, serta pemrograman web modern (HTML, CSS, JS).";
+                }
+
                 aiMessages.innerHTML += `
                     <div class="flex items-start gap-2">
                         <div class="w-6 h-6 rounded bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
                             <i class="fa-solid fa-robot text-xs"></i>
                         </div>
-                        <div class="bg-slate-800/80 border border-cyan-500/20 text-gray-200 p-2.5 rounded-xl max-w-[80%] font-sans">
+                        <div class="bg-slate-800/80 border border-cyan-500/20 text-gray-200 p-2.5 rounded-xl max-w-[80%]">
                             ${response}
                         </div>
                     </div>
                 `;
                 aiMessages.scrollTop = aiMessages.scrollHeight;
-            }, 500);
+            }, 600);
         }
 
-        function getAiResponse(text) {
-            if (text.includes('halo') || text.includes('hi') || text.includes('pagi') || text.includes('sore') || text.includes('malam')) {
-                return "Halo! Ada yang bisa saya bantu tentang portofolio atau informasi Almas?";
-            } else if (text.includes('siapa') || text.includes('profil') || text.includes('almas') || text.includes('umur')) {
-                return "Almas adalah siswa SMK YPI jurusan TKJ (Teknik Komputer & Jaringan) berusia 16 tahun yang menyukai jaringan komputer, web development, dan gaming.";
-            } else if (text.includes('game') || text.includes('mabar') || text.includes('ff') || text.includes('ml') || text.includes('id') || text.includes('ps2')) {
-                return "Almas aktif bermain Free Fire (ID: 8098858512), Mobile Legends (ID: 694105896), dan game retro PS2 seperti Resident Evil 4, Downhill, SmackDown, dan God of War!";
-            } else if (text.includes('lagu') || text.includes('musik') || text.includes('musik favorit')) {
-                return "Lagu favorit Almas antara lain: Kota Ini Tak Sama Tanpa Mu, Bergema Selamanya, dan Penjaga Hati. Kamu bisa cek di UI Music Player!";
-            } else if (text.includes('kontak') || text.includes('wa') || text.includes('whatsapp') || text.includes('email') || text.includes('hubungi')) {
-                return "Anda bisa menghubungi Almas via WhatsApp di <a href='https://wa.me/6288276757693' target='_blank' class='text-emerald-400 underline'>088276757693</a> atau email ke <a href='mailto:almasprivate24@gmail.com' class='text-cyan-400 underline'>almasprivate24@gmail.com</a>.";
-            } else if (text.includes('tkj') || text.includes('sekolah') || text.includes('skill') || text.includes('keahlian')) {
-                return "Keahlian utama Almas di bidang TKJ mencakup konfigurasi MikroTik Router, Cisco Networking, Linux Server Setup, serta Web Coding (HTML/CSS/JS).";
-            } else {
-                return "Terima kasih telah bertanya! Saya dapat memberikan informasi seputar keahlian TKJ Almas, daftar game favorit, atau info kontak WhatsApp/Email Almas.";
-            }
-        }
-
-        function escapeHtml(string) {
-            return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
-
-        /* UI Music Player Logic (Visual Only / No Audio) */
+        /* Real Audio Music Player Logic */
         const playlist = [
-            { title: "Kota Ini Tak Sama Tanpa Mu", artist: "Almas Favorites", time: "03:45" },
-            { title: "Bergema Selamanya", artist: "Almas Favorites", time: "04:12" },
-            { title: "Penjaga Hati", artist: "Almas Favorites", time: "04:05" }
+            { 
+                title: "Kota Ini Tak Sama Tanpa Mu", 
+                artist: "Nadhif Basalamah",
+                src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+            },
+            { 
+                title: "Bergema Selamanya", 
+                artist: "Nadhif Basalamah",
+                src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+            },
+            { 
+                title: "Penjaga Hati", 
+                artist: "Nadhif Basalamah",
+                src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+            }
         ];
+
         let currentTrackIndex = 0;
-        let isPlaying = true;
+        let isPlaying = false;
+        const realAudio = document.getElementById('realAudioPlayer');
+
+        // Set initial track
+        realAudio.src = playlist[currentTrackIndex].src;
 
         function toggleMusicWidget() {
             const musicModal = document.getElementById('musicModal');
@@ -649,49 +660,97 @@
             }
         }
 
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Sync Progress Bar and Times
+        realAudio.addEventListener('timeupdate', () => {
+            if (realAudio.duration) {
+                const progressPercent = (realAudio.currentTime / realAudio.duration) * 100;
+                document.getElementById('musicProgressBar').style.width = `${progressPercent}%`;
+                document.getElementById('musicCurrentTime').innerText = formatTime(realAudio.currentTime);
+                document.getElementById('musicTotalTime').innerText = formatTime(realAudio.duration);
+            }
+        });
+
+        // Auto next track when ended
+        realAudio.addEventListener('ended', () => {
+            nextTrack();
+        });
+
+        function seekAudio(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickPosition = (e.clientX - rect.left) / rect.width;
+            if (realAudio.duration) {
+                realAudio.currentTime = clickPosition * realAudio.duration;
+            }
+        }
+
+        function updateTrackUI() {
+            const track = playlist[currentTrackIndex];
+            document.getElementById('musicTitle').innerText = track.title;
+            document.getElementById('musicArtist').innerText = track.artist;
+
+            const discIcon = document.getElementById('discIcon');
+            if (isPlaying) {
+                discIcon.classList.add('animate-spin');
+                discIcon.style.animationDuration = '4s';
+            } else {
+                discIcon.classList.remove('animate-spin');
+            }
+
+            for (let i = 0; i < playlist.length; i++) {
+                const el = document.getElementById(`track-${i}`);
+                if (i === currentTrackIndex) {
+                    el.className = "p-2 rounded-xl bg-purple-500/20 text-cyan-300 font-semibold cursor-pointer hover:bg-purple-500/30 transition-colors flex items-center justify-between";
+                    el.innerHTML = `<span class="truncate">${i + 1}. ${playlist[i].title}</span>${isPlaying ? '<i class="fa-solid fa-volume-high text-[10px]"></i>' : ''}`;
+                } else {
+                    el.className = "p-2 rounded-xl text-gray-400 cursor-pointer hover:bg-slate-800 transition-colors flex items-center justify-between";
+                    el.innerHTML = `<span class="truncate">${i + 1}. ${playlist[i].title}</span>`;
+                }
+            }
+        }
+
         function selectTrack(index) {
             currentTrackIndex = index;
-            updateMusicUI();
+            realAudio.src = playlist[currentTrackIndex].src;
+            realAudio.play();
+            isPlaying = true;
+            updatePlayBtn();
+            updateTrackUI();
+            showToast(`Memutar: ${playlist[index].title}`);
+        }
+
+        function togglePlayState() {
+            if (isPlaying) {
+                realAudio.pause();
+                isPlaying = false;
+            } else {
+                realAudio.play();
+                isPlaying = true;
+            }
+            updatePlayBtn();
+            updateTrackUI();
+            showToast(isPlaying ? "Musik Dilanjutkan" : "Musik Dijeda");
+        }
+
+        function updatePlayBtn() {
+            const btn = document.getElementById('playPauseBtn');
+            btn.innerHTML = isPlaying ? '<i class="fa-solid fa-pause text-sm"></i>' : '<i class="fa-solid fa-play text-sm ml-0.5"></i>';
         }
 
         function nextTrack() {
             currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            updateMusicUI();
+            selectTrack(currentTrackIndex);
         }
 
         function prevTrack() {
             currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-            updateMusicUI();
-        }
-
-        function togglePlayState() {
-            isPlaying = !isPlaying;
-            const btn = document.getElementById('playPauseBtn');
-            if(isPlaying) {
-                btn.innerHTML = '<i class="fa-solid fa-pause text-sm"></i>';
-                showToast("Visual Play: " + playlist[currentTrackIndex].title);
-            } else {
-                btn.innerHTML = '<i class="fa-solid fa-play text-sm ml-0.5"></i>';
-                showToast("Visual Pause");
-            }
-        }
-
-        function updateMusicUI() {
-            const track = playlist[currentTrackIndex];
-            document.getElementById('musicTitle').innerText = track.title;
-            document.getElementById('musicArtist').innerText = track.artist;
-            document.getElementById('musicTotalTime').innerText = track.time;
-
-            playlist.forEach((_, idx) => {
-                const el = document.getElementById(`track-${idx}`);
-                if (idx === currentTrackIndex) {
-                    el.className = "p-2 rounded-xl bg-purple-500/20 text-cyan-300 font-semibold cursor-pointer hover:bg-purple-500/30 transition-colors flex items-center justify-between";
-                    el.innerHTML = `<span class="truncate">${idx + 1}. ${playlist[idx].title}</span><i class="fa-solid fa-volume-high text-[10px]"></i>`;
-                } else {
-                    el.className = "p-2 rounded-xl text-gray-400 cursor-pointer hover:bg-slate-800 transition-colors flex items-center justify-between";
-                    el.innerHTML = `<span class="truncate">${idx + 1}. ${playlist[idx].title}</span>`;
-                }
-            });
+            selectTrack(currentTrackIndex);
         }
     </script>
 </body>
