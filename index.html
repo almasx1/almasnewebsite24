@@ -108,13 +108,57 @@
     </div>
 
     <!-- Floating Action Controls -->
-    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end">
+        <button onclick="toggleAiChat()" id="aiToggleBtn" title="Tanya AI Almas" class="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-black flex items-center justify-center shadow-lg shadow-cyan-500/30 hover:scale-110 transition-all border border-cyan-300">
+            <i class="fa-solid fa-robot text-xl"></i>
+        </button>
         <button onclick="toggleSnow()" id="snowBtn" title="Toggle Salju" class="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center text-cyan-400 hover:bg-cyan-500/20 transition-all border border-cyan-500/30 shadow-xl group">
             <i class="fa-solid fa-snowflake text-lg group-hover:rotate-180 transition-transform duration-700"></i>
         </button>
         <a href="https://wa.me/6288276757693?text=Halo%20Almas,%20saya%20tertarik%20dengan%20portofolio%20Anda!" target="_blank" class="w-12 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center shadow-lg shadow-emerald-500/30 transition-all hover:scale-110">
             <i class="fa-brands fa-whatsapp text-2xl"></i>
         </a>
+    </div>
+
+    <!-- Interactive AI Chat Widget Window -->
+    <div id="aiChatModal" class="fixed bottom-24 right-6 z-50 w-80 sm:w-96 rounded-2xl glass-panel border border-cyan-400/40 shadow-2xl hidden flex-col overflow-hidden transition-all duration-300">
+        <!-- AI Chat Header -->
+        <div class="bg-slate-900/90 p-4 border-b border-cyan-500/20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                    <h4 class="font-orbitron font-bold text-sm text-white">Almas Cyber AI</h4>
+                    <span class="text-[10px] text-emerald-400 flex items-center gap-1 font-mono">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online
+                    </span>
+                </div>
+            </div>
+            <button onclick="toggleAiChat()" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- AI Messages Window -->
+        <div id="aiMessages" class="p-4 h-72 overflow-y-auto space-y-3 text-xs font-sans bg-slate-950/80">
+            <div class="flex items-start gap-2">
+                <div class="w-6 h-6 rounded bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-robot text-xs"></i>
+                </div>
+                <div class="bg-slate-800/80 border border-cyan-500/20 text-gray-200 p-2.5 rounded-xl max-w-[80%]">
+                    Halo! Saya AI Almas. Ada yang ingin kamu tanyakan seputar jurusan TKJ, game favorit Almas, atau cara menghubungi Almas?
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Chat Input -->
+        <div class="p-3 bg-slate-900/90 border-t border-cyan-500/20 flex gap-2">
+            <input type="text" id="aiInput" placeholder="Tulis pesan..." autocomplete="off" class="bg-slate-950 border border-cyan-500/30 text-white text-xs rounded-xl px-3 py-2 w-full focus:outline-none focus:border-cyan-400 font-mono">
+            <button onclick="sendAiMessage()" class="px-3 py-2 rounded-xl bg-cyan-400 text-slate-950 font-bold hover:bg-cyan-300 transition-colors">
+                <i class="fa-solid fa-paper-plane text-xs"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Navigation Bar -->
@@ -186,7 +230,6 @@
                 <div class="relative group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 rounded-3xl blur-md opacity-70 group-hover:opacity-100 transition duration-500"></div>
                     <div class="relative w-72 h-80 sm:w-80 sm:h-96 rounded-3xl overflow-hidden border-2 border-cyan-400/50 glass-panel p-2">
-                        <!-- Gambar placeholder online cyberpunk/tech -->
                         <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=800&auto=format&fit=crop" alt="Almas Avatar" class="w-full h-full object-cover object-center rounded-2xl group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute bottom-4 left-4 right-4 glass-panel p-3 rounded-xl border border-white/10 text-center">
                             <span class="font-orbitron font-bold text-sm text-cyan-400 block">ALMAS</span>
@@ -299,7 +342,8 @@
     <footer id="contact" class="py-12 border-t border-white/10 relative z-20 bg-slate-950/50">
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-                <span class="font-orbitron font-extrabold text-xl text-white">ALMAS<span class="text-cyan-400">.NET</span></span>
+                <!-- Brand diubah dari ALMAS.NET menjadi ALMAS -->
+                <span class="font-orbitron font-extrabold text-xl text-white">ALMAS</span>
                 <p class="text-xs text-gray-400 mt-1">Siswa SMK YPI • Jurusan Teknik Komputer & Jaringan</p>
             </div>
             
@@ -433,6 +477,78 @@
                 terminalBody.scrollTop = terminalBody.scrollHeight;
             }
         });
+
+        /* Cyber AI Chat Assistant Logic */
+        function toggleAiChat() {
+            const chatModal = document.getElementById('aiChatModal');
+            if (chatModal.classList.contains('hidden')) {
+                chatModal.classList.remove('hidden');
+                chatModal.classList.add('flex');
+            } else {
+                chatModal.classList.add('hidden');
+                chatModal.classList.remove('flex');
+            }
+        }
+
+        const aiInput = document.getElementById('aiInput');
+        const aiMessages = document.getElementById('aiMessages');
+
+        aiInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendAiMessage();
+        });
+
+        function sendAiMessage() {
+            const query = aiInput.value.trim();
+            if (!query) return;
+
+            // Render User Message
+            aiMessages.innerHTML += `
+                <div class="flex items-start gap-2 justify-end">
+                    <div class="bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 p-2.5 rounded-xl max-w-[80%] font-sans">
+                        ${escapeHtml(query)}
+                    </div>
+                </div>
+            `;
+
+            aiInput.value = "";
+            aiMessages.scrollTop = aiMessages.scrollHeight;
+
+            // Process AI Response
+            setTimeout(() => {
+                const response = getAiResponse(query.toLowerCase());
+                aiMessages.innerHTML += `
+                    <div class="flex items-start gap-2">
+                        <div class="w-6 h-6 rounded bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-robot text-xs"></i>
+                        </div>
+                        <div class="bg-slate-800/80 border border-cyan-500/20 text-gray-200 p-2.5 rounded-xl max-w-[80%] font-sans">
+                            ${response}
+                        </div>
+                    </div>
+                `;
+                aiMessages.scrollTop = aiMessages.scrollHeight;
+            }, 500);
+        }
+
+        function getAiResponse(text) {
+            if (text.includes('halo') || text.includes('hi') || text.includes('pagi') || text.includes('sore') || text.includes('malam')) {
+                return "Halo! Ada yang bisa saya bantu tentang portofolio atau informasi Almas?";
+            } else if (text.includes('siapa') || text.includes('profil') || text.includes('almas') || text.includes('umur')) {
+                return "Almas adalah siswa SMK YPI jurusan TKJ (Teknik Komputer & Jaringan) berusia 16 tahun yang menyukai jaringan komputer, web development, dan gaming.";
+            } else if (text.includes('game') || text.includes('mabar') || text.includes('ff') || text.includes('ml') || text.includes('ps2')) {
+                return "Almas aktif bermain Free Fire (Grandmaster), Mobile Legends (Mythic Glory), dan game retro PS2 seperti Resident Evil 4, Downhill, SmackDown, dan God of War!";
+            } else if (text.includes('kontak') || text.includes('wa') || text.includes('whatsapp') || text.includes('email') || text.includes('hubungi')) {
+                return "Anda bisa menghubungi Almas via WhatsApp di <a href='https://wa.me/6288276757693' target='_blank' class='text-emerald-400 underline'>088276757693</a> atau email ke <a href='mailto:almasprivate24@gmail.com' class='text-cyan-400 underline'>almasprivate24@gmail.com</a>.";
+            } else if (text.includes('tkj') || text.includes('sekolah') || text.includes('skill') || text.includes('keahlian')) {
+                return "Keahlian utama Almas di bidang TKJ mencakup konfigurasi MikroTik Router, Cisco Networking, Linux Server Setup, serta Web Coding (HTML/CSS/JS).";
+            } else {
+                return "Terima kasih telah bertanya! Saya dapat memberikan informasi seputar keahlian TKJ Almas, daftar game favorit, atau info kontak WhatsApp/Email Almas.";
+            }
+        }
+
+        function escapeHtml(string) {
+            return String(string).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
     </script>
 </body>
 </html>
